@@ -5,7 +5,7 @@ set "PY=python"
 where python >nul 2>nul || set "PY=py"
 if not "%~1"=="" set "PY=%~1"
 echo ============================================
-echo   Antigravity - 还原官方英文原版
+echo   Antigravity - 杩樺師瀹樻柟鑻辨枃鍘熺増
 echo ============================================
 "%PY%" "%~dp0install.py" restore --close
 echo.
