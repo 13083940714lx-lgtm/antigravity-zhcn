@@ -32,8 +32,10 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-ASSETS = ROOT / "assets"
-VENDOR = ROOT / "vendor"
+# PyInstaller onefile 运行时资源被解到临时目录，用 _MEIPASS 定位
+BUNDLE_ROOT = Path(getattr(sys, "_MEIPASS", str(ROOT)))
+ASSETS = BUNDLE_ROOT / "assets"
+VENDOR = BUNDLE_ROOT / "vendor"
 sys.path.insert(0, str(VENDOR))
 
 from asar_codec import (  # noqa: E402
@@ -177,12 +179,18 @@ def sync_patch_version(dist_dir: Path, app_ver: str) -> list[str]:
     return touched
 
 
-def patch_all(extracted_dir: Path, engine_template: str, dictionary: dict[str, str], app_ver: str) -> list[str]:
+def patch_all(
+    extracted_dir: Path,
+    engine_template: str,
+    dictionary: dict[str, str],
+    app_ver: str,
+    block_auto_update: bool = False,
+) -> list[str]:
     touched = apply_all_patches(
         extracted_dir,
         engine_template=engine_template,
         dictionary=dictionary,
-        block_auto_update=False,
+        block_auto_update=block_auto_update,
         is_test_preview=False,
     )
     dist_dir = extracted_dir / "dist"
@@ -195,7 +203,12 @@ def patch_all(extracted_dir: Path, engine_template: str, dictionary: dict[str, s
 
 # ---------------------------------------------------------------- 构建
 
-def build_localized(source_asar: Path, out_asar: Path, workdir: Path | None = None) -> dict:
+def build_localized(
+    source_asar: Path,
+    out_asar: Path,
+    workdir: Path | None = None,
+    block_auto_update: bool = False,
+) -> dict:
     dictionary = load_dictionary()
     engine_template = load_engine_template()
     header, _base, _unpacked = read_header(source_asar)
@@ -215,10 +228,13 @@ def build_localized(source_asar: Path, out_asar: Path, workdir: Path | None = No
         extract_asar(source_asar, extracted)
 
         print(f"[2/5] 打补丁（词典 {len(dictionary)} 条）…")
-        touched = patch_all(extracted, engine_template, dictionary, app_ver)
+        touched = patch_all(extracted, engine_template, dictionary, app_ver, block_auto_update)
 
         print(f"[3/5] 校验 {len(touched)} 个 JS 模块语法…")
-        verify_js_syntax(extracted, touched)
+        if shutil.which("node"):
+            verify_js_syntax(extracted, touched)
+        else:
+            print("      未找到 Node.js，跳过语法校验（不影响安装结果）")
 
         print("[4/5] 重新打包 asar…")
         pack_asar(extracted, packed, unpack_dirs=UNPACK_DIRS, unpack_files=unpacked_files)
@@ -303,19 +319,35 @@ def cmd_install(args) -> int:
             return 2
 
     backup = target_asar.with_name(target_asar.name + BACKUP_SUFFIX)
-    if backup.exists() and not is_asar_localized(backup):
+    target_ver = read_asar_version(target_asar)
+    target_localized = is_asar_localized(target_asar)
+
+    if not target_localized:
+        # 官方更新会把 app.asar 换成新版本：旧备份不能再当补丁源，否则版本错配
+        if backup.exists():
+            backup_ver = read_asar_version(backup)
+            if backup_ver != target_ver:
+                archived = backup.with_name(f"{backup.name}.{backup_ver}")
+                shutil.move(str(backup), str(archived))
+                print(f"[备份] 客户端已从 v{backup_ver} 升级到 v{target_ver}，旧备份另存为 {archived.name}")
+        if not backup.exists():
+            print(f"[备份] 保存当前原版 asar -> {backup.name} (v{target_ver})")
+            shutil.copy2(target_asar, backup)
         source = backup
-        print(f"[源] 使用原始备份 {backup.name} (v{read_asar_version(backup)})")
-    elif not is_asar_localized(target_asar):
-        print(f"[备份] 保存原始 asar -> {backup.name}")
-        shutil.copy2(target_asar, backup)
-        source = backup
+        print(f"[源] 使用当前版本原始备份 {backup.name} (v{read_asar_version(backup)})")
+    elif backup.exists() and not is_asar_localized(backup):
+        if read_asar_version(backup) == target_ver:
+            source = backup
+            print(f"[源] 使用原始备份 {backup.name} (v{read_asar_version(backup)})")
+        else:
+            source = target_asar
+            print("[源] 备份版本与当前客户端不一致，改为在已汉化文件上幂等重打补丁")
     else:
         source = target_asar
         print("[源] 目标已含汉化补丁，直接在其上重新打补丁（幂等）")
 
     out = Path(tempfile.gettempdir()) / "agy-zh-app.asar"
-    info = build_localized(source, out)
+    info = build_localized(source, out, block_auto_update=getattr(args, "block_auto_update", False))
     deploy(out, out.with_name(out.name + ".unpacked"), target_asar)
     print(
         "\n汉化完成！\n"
@@ -381,7 +413,7 @@ def cmd_build(args) -> int:
     target_asar, _exe = discover_installation(args.app_dir, args.asar)
     backup = target_asar.with_name(target_asar.name + BACKUP_SUFFIX)
     source = backup if backup.exists() and not is_asar_localized(backup) else target_asar
-    info = build_localized(source, Path(args.out))
+    info = build_localized(source, Path(args.out), block_auto_update=getattr(args, "block_auto_update", False))
     print(json.dumps(info, ensure_ascii=False, indent=2))
     return 0
 
@@ -407,19 +439,26 @@ def main(argv=None) -> int:
     parser.add_argument("--asar", default=None, help="直接指定 app.asar 路径")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    p_install = sub.add_parser("install", help="安装/更新汉化")
+    # 子命令也能直接带 --app-dir / --asar（应用内更新调用的是 `install --app-dir ...`）
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--app-dir", default=None, help="Antigravity 安装目录")
+    common.add_argument("--asar", default=None, help="直接指定 app.asar 路径")
+
+    p_install = sub.add_parser("install", parents=[common], help="安装/更新汉化")
     p_install.add_argument("--close", action="store_true", help="自动关闭正在运行的 Antigravity")
+    p_install.add_argument("--block-auto-update", action="store_true", help="禁止后台静默下载官方更新")
     p_install.set_defaults(func=cmd_install)
 
-    p_restore = sub.add_parser("restore", help="还原官方原版")
+    p_restore = sub.add_parser("restore", parents=[common], help="还原官方原版")
     p_restore.add_argument("--close", action="store_true")
     p_restore.set_defaults(func=cmd_restore)
 
-    p_status = sub.add_parser("status", help="查看汉化状态")
+    p_status = sub.add_parser("status", parents=[common], help="查看汉化状态")
     p_status.set_defaults(func=cmd_status)
 
-    p_build = sub.add_parser("build", help="只构建，不安装")
+    p_build = sub.add_parser("build", parents=[common], help="只构建，不安装")
     p_build.add_argument("--out", required=True, help="输出 asar 路径")
+    p_build.add_argument("--block-auto-update", action="store_true")
     p_build.set_defaults(func=cmd_build)
 
     args = parser.parse_args(argv)

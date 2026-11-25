@@ -13,23 +13,98 @@ model & quota page, project settings and the chat composer are all Chinese, whil
 
 ---
 
-## Quick start
+## Usage
 
-**Requirements**: Windows / macOS / Linux, Python 3.8+. Node.js 18+ is used for JS syntax self-checks
-(the installer auto-detects common install locations).
+**Requirements**: Windows / macOS / Linux with Python 3.8+. Node.js 18+ is only used for the JS syntax self-check —
+installation works without it (the check is skipped).
 
-1. Quit Antigravity completely
-2. Double-click `一键汉化.bat` (macOS / Linux: `python3 install.py install --close`)
+### Option 1: Double-click (Windows, easiest)
+
+1. Quit Antigravity completely (including the tray icon)
+2. Double-click `一键汉化.bat`
 3. Start Antigravity — the UI is now Chinese
 
-```
-python install.py status   # versions, dictionary size, localized?, collected gaps
-python install.py install  # install / re-apply after an official update
-python install.py restore  # restore the original English build from backup
+### Option 2: Command line (any platform)
+
+```bash
+python install.py status    # versions, dictionary size, localized?, collected gaps
+python install.py install   # install / re-apply after an official update
+python install.py restore   # restore the original English build from backup
 ```
 
 The original `resources/app.asar` is backed up as `app.asar.original.bak` before patching, so `restore` is lossless
-and the whole cycle can be repeated any time.
+and the cycle can be repeated at any time.
+
+### Option 3: Hand the prompt to your local AI agent (no commands needed)
+
+Copy the whole block below to the agent on your machine (Claude Code / Cursor / Codex / Antigravity itself). It will
+install and verify everything by itself:
+
+```text
+Please install the Simplified Chinese localization for Google Antigravity on this machine.
+Follow these steps and do not skip the verification:
+
+1. Confirm the OS (Windows / macOS / Linux) and Python 3.8+; install Python first if missing.
+2. Fetch the project (either way):
+   git clone https://github.com/13083940714lx-lgtm/antigravity-zhcn
+   or download https://github.com/13083940714lx-lgtm/antigravity-zhcn/archive/refs/heads/main.zip and unzip it
+3. Quit Antigravity completely (on Windows: taskkill /IM Antigravity.exe /F).
+4. Inside the project directory run:
+   Windows:        python install.py install --close
+   macOS / Linux:  python3 install.py install --close
+5. Confirm the output contains "汉化完成！", "版本: <client version>" and "词条: 8158".
+6. Restart Antigravity, check the menu bar, Settings (Ctrl+,) and the keyboard shortcuts page are Chinese,
+   then send me a screenshot of the settings page.
+7. If step 4 says the installation directory cannot be found, re-run with
+   --app-dir "<Antigravity install dir>".
+8. If the UI is still English, run python install.py status and paste the output.
+9. To restore English: python install.py restore --close.
+
+Notes: do not delete resources\app.asar.original.bak (the original backup); do not touch my projects or chats.
+```
+
+> The agent only needs Python. Localization changes UI strings on disk only — no account logic, no data upload.
+
+### Option 4: In-app update check
+
+After localization, open **Settings (Ctrl+,) → General → 中文汉化与更新**:
+
+- **检查更新 / Check for updates**: queries this repository's Releases and compares versions
+- When "有新版 vX" appears, click **打开发布页下载**: your browser opens the Release page; download the latest
+  package, unzip it and re-run the installer
+- The daily auto-check toggle at the bottom can be switched off; once off, no network requests are made at all
+
+---
+
+## After an official update
+
+Antigravity's auto-updater **overwrites** `resources/app.asar`, so the UI goes back to English after every official
+update. That is expected behaviour, not a broken patch.
+
+**Three steps to recover**:
+
+1. Let the client finish updating and restart, then quit Antigravity completely
+2. Re-run the installer: `python install.py install --close` (or double-click `一键汉化.bat`)
+3. Start it again — Chinese is back, and **settings, projects and chat history are untouched**
+
+The installer protects you from version mismatch:
+
+- If the client version changed, the old backup is archived as `app.asar.original.bak.<old version>`, the new original
+  is backed up, and patching starts from it
+- Re-running is idempotent — patches never stack
+- JS syntax and unpacked-file parity are verified before deployment
+
+**Still seeing English after a big upgrade (e.g. 2.35 → 2.4x)?**
+Visit the new pages once, run `python tools/report_missing.py`, and file the `needs translation` list as an Issue —
+or add entries to `assets/overrides.json` and re-run the installer (see "Maintaining the dictionary").
+
+**Tired of re-patching?** Disable silent background downloads of official updates:
+
+```bash
+python install.py install --block-auto-update
+```
+
+(The manual "check for updates" menu item stays; only background downloads are disabled.)
 
 ---
 

@@ -29,9 +29,13 @@
   };
   var SKIP_SELECTOR = '[contenteditable="true"],[contenteditable=""],[contenteditable="plaintext-only"],' +
     '.monaco-editor,.monaco-diff-editor,.cm-editor,.cm-content,[data-agy-zh-ignore],' +
-    '[translate="no"],.notranslate';
+    '[translate="no"],.notranslate,.markdown-body,.prose';
   var CJK = /[\u3400-\u9fff\uf900-\ufaff]/;
   var LETTERS = /[A-Za-z]{2}/;
+  // 对话正文 / 搜索过程 / LaTeX / URL 编码：不是界面文案，别收
+  var NOISE = /\\[a-zA-Z]+|\\frac|\\hat|\$[^$]*\$|%[0-9A-F]{2}|^uid=\d+/;
+  var STATUS_PREFIX = /^(Searching|Thinking|Reading|Running|Analyzing|Wrote|Fetched|Visited|Browsed)\b/;
+  var MAX_LEN = 140;
 
   var pending = new Map();   // text -> 连续命中轮次
   var reported = new Set();  // 已上报
@@ -62,9 +66,10 @@
     while ((node = walker.nextNode()) && guard < 60000) {
       guard++;
       var text = (node.nodeValue || '').trim();
-      if (text.length < 2 || text.length > 300) continue;
+      if (text.length < 2 || text.length > MAX_LEN) continue;
       if (!LETTERS.test(text)) continue;
       if (CJK.test(text)) continue;
+      if (NOISE.test(text) || STATUS_PREFIX.test(text)) continue;
       if (shouldSkip(node.parentElement)) continue;
       current.add(text);
     }

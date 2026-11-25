@@ -1118,7 +1118,7 @@
         htmlUrl: (remote && remote.htmlUrl) || meta.releasesUrl,
         assetUrl: (remote && remote.assetUrl) || '',
         assetSize: (remote && remote.assetSize) || 0,
-        summary: '检测到客户端已升级至 v' + meta.appVersion + '（当前补丁适配 v' + meta.targetAppVersion + '），建议获取新版汉化。',
+        summary: '检测到客户端已升级至 v' + meta.appVersion + '（当前补丁适配 v' + meta.targetAppVersion + '），建议重新运行安装器或获取新版汉化。',
         error: ''
       };
     }
@@ -1131,7 +1131,7 @@
         htmlUrl: remote.htmlUrl || meta.releasesUrl,
         assetUrl: remote.assetUrl || '',
         assetSize: remote.assetSize || 0,
-        summary: '发现 GitHub 新版汉化 ' + remote.latestTag + '（当前补丁 v' + meta.patchVersion + '）。可直接在当前界面一键下载更新。',
+        summary: '发现 GitHub 新版汉化 ' + remote.latestTag + '（当前补丁 v' + meta.patchVersion + '）。点“打开发布页下载”获取最新安装包。',
         error: ''
       };
     }
@@ -1517,24 +1517,17 @@
         });
         actions1.appendChild(restartBtn);
       } else {
-        const updateBtn = makeActionBtn('一键更新汉化', {
+        const updateBtn = makeActionBtn('打开发布页下载', {
           bg: pal.primaryBtnBg,
           borderColor: pal.primaryBtnBg,
           color: pal.primaryBtnText,
           onClick: function() {
-            uiState.downloadStatus = 'downloading';
-            uiState.downloadPercent = 0;
-            renderPositionA(findSettingsSidebarAnchor());
-            if (uiState.simulatedUpdate) {
-              invokeUpdateIpc('zh-localization:download-update', { isSimulated: true });
-            } else {
-              invokeUpdateIpc('zh-localization:download-update', {
-                downloadUrl: ds.assetUrl,
-                totalBytes: ds.assetSize,
-                isSimulated: false
-              });
-            }
-            startDownloadPolling();
+            const url = ds.htmlUrl || meta.releasesUrl;
+            invokeUpdateIpc('zh-localization:open-release', url).then(function(res) {
+              if (res === null && typeof window !== 'undefined' && typeof window.open === 'function') {
+                window.open(url, '_blank', 'noopener,noreferrer');
+              }
+            });
           }
         });
         actions1.appendChild(updateBtn);

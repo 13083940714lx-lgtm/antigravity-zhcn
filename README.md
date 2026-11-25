@@ -12,21 +12,89 @@
 
 ---
 
-## 快速开始
+## 使用方式
 
-**环境**：Windows / macOS / Linux，Python 3.8+；JavaScript 语法自检需要 Node.js 18+（脚本会自动探测常见安装位置）。
+**环境**：Windows / macOS / Linux，Python 3.8+；Node.js 18+ 只用于 JS 语法自检，没有也能装（自动跳过校验）。
 
-1. 完全退出 Antigravity
-2. 双击 `一键汉化.bat`（macOS / Linux：`python3 install.py install --close`）
+### 方式一：双击脚本（Windows，最简单）
+
+1. 完全退出 Antigravity（托盘里也要退出）
+2. 双击 `一键汉化.bat`
 3. 启动 Antigravity，界面即为中文
 
-```
-python install.py status   # 查看版本、词条数、是否已汉化、漏翻收集
-python install.py install  # 安装 / 官方更新后重新打补丁
-python install.py restore  # 从备份还原官方英文原版
+### 方式二：命令行（任意平台）
+
+```bash
+python install.py status    # 查看版本、词条数、是否已汉化、漏翻收集
+python install.py install   # 安装 / 官方更新后重新打补丁
+python install.py restore   # 从备份还原官方英文原版
 ```
 
-安装前会自动备份 `resources/app.asar.original.bak`，`restore` 就是把它拷回去，**无损、可反复**。
+安装前自动备份 `resources/app.asar.original.bak`，`restore` 就是把它拷回去，**无损、可反复**。
+
+### 方式三：把提示词交给本机 AI Agent（不想敲命令就用这个）
+
+把下面整段复制给你电脑上的 Agent（Claude Code / Cursor / Codex / Antigravity 自身等均可），它会自己完成安装与验证：
+
+```text
+帮我在这台电脑上安装 Google Antigravity 的简体中文汉化，按以下步骤执行，不要跳过验证：
+
+1. 确认系统（Windows / macOS / Linux）与 Python 3.8+；没有 Python 就先安装。
+2. 获取汉化工程（任选一种）：
+   git clone https://github.com/13083940714lx-lgtm/antigravity-zhcn
+   或下载 https://github.com/13083940714lx-lgtm/antigravity-zhcn/archive/refs/heads/main.zip 并解压
+3. 完全退出 Antigravity（Windows 可执行 taskkill /IM Antigravity.exe /F）。
+4. 在工程目录执行：
+   Windows:        python install.py install --close
+   macOS / Linux:  python3 install.py install --close
+5. 确认输出里出现「汉化完成！」「版本: <客户端版本>」「词条: 8158」。
+6. 重新启动 Antigravity，检查菜单栏、设置页（Ctrl+,）、快捷键页是否为中文，并把设置页截图给我。
+7. 如果第 4 步提示找不到安装目录，用 --app-dir "<Antigravity 安装目录>" 再执行一次。
+8. 如果安装后界面仍是英文，执行 python install.py status 并把输出贴给我。
+9. 需要还原英文版时执行：python install.py restore --close。
+
+注意：不要删除 resources\app.asar.original.bak（官方原版备份）；不要改动我的项目与对话数据。
+```
+
+> Agent 只需要 Python。汉化只改本地界面文案，不改账号逻辑、不上传任何数据。
+
+### 方式四：应用内检查更新
+
+汉化后在 **设置（Ctrl+,）→ 通用 → 中文汉化与更新** 卡片：
+
+- **检查更新**：请求本仓库 Releases，对比当前补丁与线上版本
+- 出现「有新版 vX」时点 **打开发布页下载**：浏览器打开 Release 页面，下载最新安装包解压后重跑安装器
+- 卡片底部「每日启动时自动检查」可以随时关掉，关掉后不再发任何网络请求
+
+---
+
+## 官方更新后怎么办
+
+Antigravity 的自动更新会**直接覆盖** `resources/app.asar`，所以每次官方升级后界面都会退回英文——这是预期行为，不是汉化坏了。
+
+**三步恢复**：
+
+1. 等客户端更新完并自动重启后，完全退出 Antigravity
+2. 重新运行安装器：`python install.py install --close`（或双击 `一键汉化.bat`）
+3. 启动后即为中文，**配置、项目、对话记录都不受影响**
+
+安装器已经针对「版本错配」做了保护：
+
+- 检测到客户端版本变化时，旧备份归档为 `app.asar.original.bak.<旧版本>`，并重新备份当前原版再打补丁
+- 重复执行是幂等的，不会叠加补丁
+- 打包前后校验 JS 语法与 unpacked 文件集合
+
+**大版本升级（例如 2.35 → 2.4x）后仍有漏翻？**
+正常点一遍新出现的页面，然后运行 `python tools/report_missing.py`，把 `needs translation` 清单提到本仓库 Issue，
+或自己写进 `assets/overrides.json` 后重跑安装器（详见下方「词库维护流程」）。
+
+**不想反复失效？** 可以关掉官方后台静默下载：
+
+```bash
+python install.py install --block-auto-update
+```
+
+（保留手动「检查更新」菜单，但不再后台下载安装包。）
 
 ---
 
