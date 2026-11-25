@@ -59,7 +59,7 @@ def notes(version: str) -> str:
 
 1. **双击**：解压 `agy-zh-installer-{version}.zip`，双击 `一键汉化.bat`
 2. **命令行**：`python install.py install --close`
-3. **交给 Agent**：把 README「方式三」的提示词整段丢给你电脑上的 AI Agent
+3. **交给 Agent**：把 README「方式一」的提示词整段丢给你电脑上的 AI Agent
 
 ### 本版内容
 
@@ -106,7 +106,18 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", required=True)
     parser.add_argument("--zip-only", action="store_true")
+    parser.add_argument("--update-notes", action="store_true", help="只刷新已有 Release 的说明正文")
     args = parser.parse_args()
+
+    tag = f"v{args.version}"
+    if args.update_notes:
+        status, rel = api(
+            "PATCH",
+            f"https://api.github.com/repos/{SLUG}/releases/tags/{tag}",
+            {"body": notes(args.version)},
+        )
+        print("notes updated:", status, rel.get("html_url"))
+        return 0
 
     dist = ROOT / "dist"
     dist.mkdir(exist_ok=True)
@@ -116,7 +127,6 @@ def main() -> int:
     if args.zip_only:
         return 0
 
-    tag = f"v{args.version}"
     try:
         status, release = api(
             "POST",
