@@ -111,9 +111,10 @@ def main() -> int:
 
     tag = f"v{args.version}"
     if args.update_notes:
+        _, current = api("GET", f"https://api.github.com/repos/{SLUG}/releases/tags/{tag}")
         status, rel = api(
             "PATCH",
-            f"https://api.github.com/repos/{SLUG}/releases/tags/{tag}",
+            f"https://api.github.com/repos/{SLUG}/releases/{current['id']}",
             {"body": notes(args.version)},
         )
         print("notes updated:", status, rel.get("html_url"))
