@@ -1447,7 +1447,7 @@
     const titleLine = document.createElement('div');
     titleLine.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
     const titleText = document.createElement('span');
-    titleText.textContent = 'Antigravity 深度中文汉化';
+    titleText.textContent = 'Antigravity 中文汉化 · antigravity-zhcn';
     titleText.style.cssText = 'font-size:13px;font-weight:600;color:' + pal.text + ';';
     titleLine.appendChild(titleText);
 
@@ -1471,6 +1471,11 @@
     desc1.textContent = ds.summary;
     desc1.style.cssText = 'font-size:12px;margin-top:3px;color:' + pal.muted + ';';
     left1.appendChild(desc1);
+
+    const repoLine = document.createElement('div');
+    repoLine.textContent = '仓库：' + String(meta.repoUrl || '').replace(/^https?:\/\//, '') + ' · 检查更新即请求该仓库 Releases';
+    repoLine.style.cssText = 'font-size:11px;margin-top:2px;color:' + pal.muted + ';opacity:0.85;word-break:break-all;';
+    left1.appendChild(repoLine);
     row1.appendChild(left1);
 
     const actions1 = document.createElement('div');

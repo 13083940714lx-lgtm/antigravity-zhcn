@@ -24,6 +24,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -58,7 +59,8 @@ MAIN_MODULE = "agy-zh-main.js"
 # 设置页「中文汉化与更新」卡片、菜单里的检查更新都指向这个仓库
 GITHUB_SLUG = "13083940714lx-lgtm/antigravity-zhcn"
 GITHUB_REPO = f"https://github.com/{GITHUB_SLUG}"
-GITHUB_API = f"https://api.github.com/repos/{GITHUB_SLUG}/releases/latest"
+GITHUB_API_BASE = f"https://api.github.com/repos/{GITHUB_SLUG}"
+GITHUB_API = f"{GITHUB_API_BASE}/releases/latest"
 
 # 上游项目里硬编码的仓库地址，构建时统一重定向到 GITHUB_REPO
 UPSTREAM_REPO = "https://github.com/ruxiayu/antigravity-zh-cn"
@@ -150,14 +152,32 @@ def retarget_upstream_links(dist_dir: Path) -> list[str]:
             continue
         if UPSTREAM_API not in text and UPSTREAM_REPO not in text:
             continue
-        new_text = text.replace(UPSTREAM_API, GITHUB_API).replace(UPSTREAM_REPO, GITHUB_REPO)
+        new_text = text.replace(UPSTREAM_API, GITHUB_API_BASE).replace(UPSTREAM_REPO, GITHUB_REPO)
         if new_text != text:
             path.write_text(new_text, encoding="utf-8")
             touched.append(str(path.relative_to(dist_dir)).replace("\\", "/"))
     return touched
 
 
-def patch_all(extracted_dir: Path, engine_template: str, dictionary: dict[str, str]) -> list[str]:
+def sync_patch_version(dist_dir: Path, app_ver: str) -> list[str]:
+    """让补丁展示版本跟随实际上被汉化的客户端版本（上游常量里写死的是 2.34.0）。"""
+    pat_meta = re.compile(r'("patchVersion"\s*:\s*")([^"]*)(")')
+    pat_var = re.compile(r'(const __agyZhPatchVer = ")([^"]*)(")')
+    touched: list[str] = []
+    for path in sorted(dist_dir.rglob("*.js")):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        new_text = pat_meta.sub(lambda m: m.group(1) + app_ver + m.group(3), text)
+        new_text = pat_var.sub(lambda m: m.group(1) + app_ver + m.group(3), new_text)
+        if new_text != text:
+            path.write_text(new_text, encoding="utf-8")
+            touched.append(str(path.relative_to(dist_dir)).replace("\\", "/"))
+    return touched
+
+
+def patch_all(extracted_dir: Path, engine_template: str, dictionary: dict[str, str], app_ver: str) -> list[str]:
     touched = apply_all_patches(
         extracted_dir,
         engine_template=engine_template,
@@ -169,6 +189,7 @@ def patch_all(extracted_dir: Path, engine_template: str, dictionary: dict[str, s
     patch_collector(dist_dir)
     main_module = patch_main_module(dist_dir)
     touched += retarget_upstream_links(dist_dir)
+    touched += sync_patch_version(dist_dir, app_ver)
     return touched + [main_module]
 
 
@@ -194,7 +215,7 @@ def build_localized(source_asar: Path, out_asar: Path, workdir: Path | None = No
         extract_asar(source_asar, extracted)
 
         print(f"[2/5] 打补丁（词典 {len(dictionary)} 条）…")
-        touched = patch_all(extracted, engine_template, dictionary)
+        touched = patch_all(extracted, engine_template, dictionary, app_ver)
 
         print(f"[3/5] 校验 {len(touched)} 个 JS 模块语法…")
         verify_js_syntax(extracted, touched)
