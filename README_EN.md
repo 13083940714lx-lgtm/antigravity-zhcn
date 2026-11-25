@@ -9,40 +9,25 @@ dynamic strings), an in-app update checker, automatic untranslated-text collecti
 Verified on **Antigravity 2.34.0 (Windows x64 / Electron 44.9.1)**: menu bar, every settings page, keyboard shortcut list,
 model & quota page, project settings and the chat composer are all Chinese, while code blocks and editor content are left untouched.
 
-![Settings page after localization](docs/preview-settings.jpg)
+![Settings — General: layout, permissions, input box and voice are all Chinese](docs/preview-settings-general.png)
+
+![Model picker: model names, reasoning effort and the usage entry are localized](docs/preview-models.png)
 
 ---
 
-## Usage
+## Quick start
 
 **Requirements**: Windows / macOS / Linux with Python 3.8+. Node.js 18+ is only used for the JS syntax self-check —
 installation works without it (the check is skipped).
 
-### Option 1: Double-click (Windows, easiest)
+### Option 1: Hand this prompt to your local AI agent (recommended)
 
-1. Quit Antigravity completely (including the tray icon)
-2. Double-click `一键汉化.bat`
-3. Start Antigravity — the UI is now Chinese
-
-### Option 2: Command line (any platform)
-
-```bash
-python install.py status    # versions, dictionary size, localized?, collected gaps
-python install.py install   # install / re-apply after an official update
-python install.py restore   # restore the original English build from backup
-```
-
-The original `resources/app.asar` is backed up as `app.asar.original.bak` before patching, so `restore` is lossless
-and the cycle can be repeated at any time.
-
-### Option 3: Hand the prompt to your local AI agent (no commands needed)
-
-Copy the whole block below to the agent on your machine (Claude Code / Cursor / Codex / Antigravity itself). It will
-install and verify everything by itself:
+Copy the whole block below to the agent on your machine (Claude Code / Cursor / Codex / Antigravity itself).
+It downloads the project, quits the client, installs, verifies the UI and reports back with a screenshot:
 
 ```text
 Please install the Simplified Chinese localization for Google Antigravity on this machine.
-Follow these steps and do not skip the verification:
+Start executing immediately; do not ask for permission first.
 
 1. Confirm the OS (Windows / macOS / Linux) and Python 3.8+; install Python first if missing.
 2. Fetch the project (either way):
@@ -52,6 +37,7 @@ Follow these steps and do not skip the verification:
 4. Inside the project directory run:
    Windows:        python install.py install --close
    macOS / Linux:  python3 install.py install --close
+   (if an older localization is installed, just re-run — the installer is idempotent)
 5. Confirm the output contains "汉化完成！", "版本: <client version>" and "词条: 8158".
 6. Restart Antigravity, check the menu bar, Settings (Ctrl+,) and the keyboard shortcuts page are Chinese,
    then send me a screenshot of the settings page.
@@ -64,6 +50,23 @@ Notes: do not delete resources\app.asar.original.bak (the original backup); do n
 ```
 
 > The agent only needs Python. Localization changes UI strings on disk only — no account logic, no data upload.
+
+### Option 2: Double-click (Windows)
+
+1. Quit Antigravity completely (including the tray icon)
+2. Double-click `一键汉化.bat`
+3. Start Antigravity — the UI is now Chinese
+
+### Option 3: Command line (any platform)
+
+```bash
+python install.py status    # versions, dictionary size, localized?, collected gaps
+python install.py install   # install / re-apply after an official update
+python install.py restore   # restore the original English build from backup
+```
+
+The original `resources/app.asar` is backed up as `app.asar.original.bak` before patching, so `restore` is lossless
+and the cycle can be repeated at any time.
 
 ### Option 4: In-app update check
 

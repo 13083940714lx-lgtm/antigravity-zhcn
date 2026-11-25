@@ -38,5 +38,10 @@
   "Model quota": "模型额度",
   "Gemini models": "Gemini 模型",
   "remaining": "剩余",
-  "What the coordinator writes so the Swarm UI's Overview can show the swarm's goal, its groups of work and a screenshot timeline. Load it before you brief and add the first workers to a swarm.": "由协调者撰写，让 Swarm UI 的概览能展示集群目标、工作组划分与截图时间线。在向集群下达任务、添加首批工作成员之前加载它。"
+  "What the coordinator writes so the Swarm UI's Overview can show the swarm's goal, its groups of work and a screenshot timeline. Load it before you brief and add the first workers to a swarm.": "由协调者撰写，让 Swarm UI 的概览能展示集群目标、工作组划分与截图时间线。在向集群下达任务、添加首批工作成员之前加载它。",
+  "Leaving Soon": "即将下线",
+  "Deprecated": "已弃用",
+  "Preview": "预览版",
+  "View usage": "查看用量",
+  "Orchestrator": "编排器"
 }

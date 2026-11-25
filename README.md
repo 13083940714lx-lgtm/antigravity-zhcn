@@ -8,36 +8,23 @@
 已在 **Antigravity 2.34.0（Windows x64 / Electron 44.9.1）** 实测：菜单栏、全部设置分页、快捷键列表、
 模型与用量、项目设置、对话输入框均为中文，代码块与编辑器内容不被误翻。
 
-![设置页：输入框与发送快捷键均已汉化](docs/preview-settings.jpg)
+![设置通用页：界面布局、权限、输入框、语音模式全部中文](docs/preview-settings-general.png)
+
+![模型选择器：模型名称、推理档位与用量入口已汉化](docs/preview-models.png)
 
 ---
 
-## 使用方式
+## 快速开始
 
 **环境**：Windows / macOS / Linux，Python 3.8+；Node.js 18+ 只用于 JS 语法自检，没有也能装（自动跳过校验）。
 
-### 方式一：双击脚本（Windows，最简单）
+### 方式一：把这段提示词交给本机 AI Agent（推荐，全自动）
 
-1. 完全退出 Antigravity（托盘里也要退出）
-2. 双击 `一键汉化.bat`
-3. 启动 Antigravity，界面即为中文
-
-### 方式二：命令行（任意平台）
-
-```bash
-python install.py status    # 查看版本、词条数、是否已汉化、漏翻收集
-python install.py install   # 安装 / 官方更新后重新打补丁
-python install.py restore   # 从备份还原官方英文原版
-```
-
-安装前自动备份 `resources/app.asar.original.bak`，`restore` 就是把它拷回去，**无损、可反复**。
-
-### 方式三：把提示词交给本机 AI Agent（不想敲命令就用这个）
-
-把下面整段复制给你电脑上的 Agent（Claude Code / Cursor / Codex / Antigravity 自身等均可），它会自己完成安装与验证：
+复制下面**整段**，粘给你电脑上的 Agent（Claude Code / Cursor / Codex / Antigravity 自身都可以）。
+它会自己下载项目、退出客户端、完成安装、验证界面，并截图汇报：
 
 ```text
-帮我在这台电脑上安装 Google Antigravity 的简体中文汉化，按以下步骤执行，不要跳过验证：
+帮我在这台电脑上安装 Google Antigravity 的简体中文汉化。直接开始执行，不要先问我权限。
 
 1. 确认系统（Windows / macOS / Linux）与 Python 3.8+；没有 Python 就先安装。
 2. 获取汉化工程（任选一种）：
@@ -47,16 +34,33 @@ python install.py restore   # 从备份还原官方英文原版
 4. 在工程目录执行：
    Windows:        python install.py install --close
    macOS / Linux:  python3 install.py install --close
-5. 确认输出里出现「汉化完成！」「版本: <客户端版本>」「词条: 8158」。
-6. 重新启动 Antigravity，检查菜单栏、设置页（Ctrl+,）、快捷键页是否为中文，并把设置页截图给我。
-7. 如果第 4 步提示找不到安装目录，用 --app-dir "<Antigravity 安装目录>" 再执行一次。
-8. 如果安装后界面仍是英文，执行 python install.py status 并把输出贴给我。
-9. 需要还原英文版时执行：python install.py restore --close。
+   （之前装过旧版汉化就直接重跑，安装器是幂等的）
+5. 确认输出里有「汉化完成！」「版本: <客户端版本>」「词条: 8158」。
+6. 重新启动 Antigravity，检查菜单栏、设置页（Ctrl+,）、快捷键页是否中文，并把设置页截图给我。
+7. 第 4 步若提示找不到安装目录，用 --app-dir "<Antigravity 安装目录>" 再执行一次。
+8. 安装后界面仍为英文时，执行 python install.py status 并把输出贴给我。
+9. 需要还原英文版：python install.py restore --close。
 
 注意：不要删除 resources\app.asar.original.bak（官方原版备份）；不要改动我的项目与对话数据。
 ```
 
-> Agent 只需要 Python。汉化只改本地界面文案，不改账号逻辑、不上传任何数据。
+> Agent 只需要 Python；汉化只改本地界面文案，不改账号逻辑、不上传任何数据。
+
+### 方式二：双击脚本（Windows）
+
+1. 完全退出 Antigravity（托盘里也要退出）
+2. 双击 `一键汉化.bat`
+3. 启动 Antigravity，界面即为中文
+
+### 方式三：命令行（任意平台）
+
+```bash
+python install.py status    # 查看版本、词条数、是否已汉化、漏翻收集
+python install.py install   # 安装 / 官方更新后重新打补丁
+python install.py restore   # 从备份还原官方英文原版
+```
+
+安装前自动备份 `resources/app.asar.original.bak`，`restore` 就是把它拷回去，**无损、可反复**。
 
 ### 方式四：应用内检查更新
 
@@ -65,6 +69,8 @@ python install.py restore   # 从备份还原官方英文原版
 - **检查更新**：请求本仓库 Releases，对比当前补丁与线上版本
 - 出现「有新版 vX」时点 **打开发布页下载**：浏览器打开 Release 页面，下载最新安装包解压后重跑安装器
 - 卡片底部「每日启动时自动检查」可以随时关掉，关掉后不再发任何网络请求
+
+![设置页的汉化卡片：补丁版本、线上版本与仓库地址](docs/preview-settings.jpg)
 
 ---
 
