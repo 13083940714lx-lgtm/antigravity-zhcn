@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# 构建产物与本地备份
+*.asar
+*.asar.unpacked/
+*.original.bak
+build/
+dist/
+work/
+_work/
+
+# 凭据：任何情况下都不要提交
+.github-token
+*.token
+.env
+.env.*
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

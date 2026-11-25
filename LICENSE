@@ -1,0 +1,51 @@
+MIT License
+
+Copyright (c) 2026 13083940714lx-lgtm (antigravity-zhcn)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Third-party attribution
+=======================
+
+This project is a derived work built on top of the following MIT-licensed
+open-source projects. Their dictionaries, DOM translation engine, ASAR
+codec and main-process patch logic are included under `vendor/` and
+`assets/` (merged / rearranged). All credit for those parts belongs to
+their authors:
+
+* ruxiayu/antigravity-zh-cn
+  https://github.com/ruxiayu/antigravity-zh-cn
+  (main dictionary, preload DOM engine, ASAR codec, main-process patches)
+
+* yuexps/Antigravity-Hans
+  https://github.com/yuexps/Antigravity-Hans
+  (additional dictionary entries for the desktop app and the IDE)
+
+* nkjDSLcvanv/antigravity-codex-theme
+  https://github.com/nkjDSLcvanv/antigravity-codex-theme
+  (additional dictionary entries covering Antigravity 2.30–2.34)
+
+Modifications made by this project (dictionary merge and extension, dynamic
+string rules, untranslated-text collection, installer, repository
+re-targeting) are released under the same MIT terms above.
+
+Antigravity and Google are trademarks of Google LLC. This project is not
+affiliated with, endorsed by, or sponsored by Google.
