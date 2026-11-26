@@ -72,5 +72,8 @@
   "Turn an idea into a website, dashboard, report, or small web tool you can share. Build it in chat or bring your own work, and publish it with Spacefast.": "把一个想法变成可分享的网站、仪表盘、报告或小型 Web 工具。在对话中构建或带入你自己的成果，用 Spacefast 一键发布。",
   "Build, test, and debug Docusign integrations with developer skills for authentication, template-based signing, envelope status, and troubleshooting.": "使用开发者技能构建、测试并调试 Docusign 集成，涵盖身份认证、模板化签署、信封状态与故障排查。",
   "Read-only marketing analytics: report spend, conversions, CPA and ROAS across ad platforms, GA4 and Search Console. It never changes your accounts.": "只读营销分析：跨广告平台、GA4 与 Search Console 报告花费、转化、CPA 与 ROAS，绝不改动你的账号。",
-  "Build, test, and manage n8n workflows and Agents through your instance MCP server. Use official skills for node setup, credentials, and debugging.": "通过你的实例 MCP 服务器构建、测试和管理 n8n 工作流与智能体。使用官方技能完成节点配置、凭据与调试。"
+  "Build, test, and manage n8n workflows and Agents through your instance MCP server. Use official skills for node setup, credentials, and debugging.": "通过你的实例 MCP 服务器构建、测试和管理 n8n 工作流与智能体。使用官方技能完成节点配置、凭据与调试。",
+  "For your hardest, long-horizon tasks": "用于你最艰难、需要长时间推进的任务",
+  "The original Gemini 4 model for advanced workflows": "面向高级工作流的初代 Gemini 4 模型",
+  "Use Hydrogen for better quality with lower quota usage": "使用 Hydrogen 可获得更高质量，且配额消耗更低"
 }

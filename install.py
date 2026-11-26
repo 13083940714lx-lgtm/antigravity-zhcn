@@ -90,6 +90,16 @@ ENGINE_EXTRA = """
     // ===== agy-zh 增强规则：扩展市场「See N more」 =====
     const __agySeeMore = /^See\\s+([0-9]+)\\s+more$/i.exec(trimmed);
     if (__agySeeMore) return replaceTrimmed(str, trimmed, '查看另外 ' + __agySeeMore[1] + ' 个');
+
+    // ===== agy-zh 增强规则：模型提示「<描述>. Leaving on Nov 30.」 =====
+    const __agyLeavingOn = /^([\\s\\S]+?)[.\\s]*Leaving on\\s+([A-Za-z]{3,9}\\.?\\s+[0-9]{1,2}(?:,?\\s*[0-9]{4})?)\\.?$/i.exec(trimmed);
+    if (__agyLeavingOn) {
+      const headRaw = __agyLeavingOn[1].trim().replace(/[.\\s]+$/, '');
+      const headCn = exactMap.get(headRaw) || lowerMap.get(headRaw.toLowerCase()) || headRaw;
+      const whenRaw = __agyLeavingOn[2].trim();
+      const whenCn = String(formatEnDateStr(whenRaw) || whenRaw).replace(/\\s+/g, '');
+      return replaceTrimmed(str, trimmed, headCn + ' 将于 ' + whenCn + ' 下线');
+    }
 """
 
 
