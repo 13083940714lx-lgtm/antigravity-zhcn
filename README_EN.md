@@ -79,6 +79,8 @@ After localization, open **Settings (Ctrl+,) → General → 中文汉化与更�
   package, unzip it and re-run the installer
 - The daily auto-check toggle at the bottom can be switched off; once off, no network requests are made at all
 
+![Localization card in Settings: patch version, online version and repository link](docs/preview-settings-card.png)
+
 ---
 
 ## After an official update

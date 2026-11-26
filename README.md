@@ -72,7 +72,7 @@ python install.py restore   # 从备份还原官方英文原版
 - 出现「有新版 vX」时点 **打开发布页下载**：浏览器打开 Release 页面，下载最新安装包解压后重跑安装器
 - 卡片底部「每日启动时自动检查」可以随时关掉，关掉后不再发任何网络请求
 
-![设置页的汉化卡片：补丁版本、线上版本与仓库地址](docs/preview-settings.jpg)
+![设置页的汉化卡片：补丁版本、线上版本与仓库地址](docs/preview-settings-card.png)
 
 ---
 
