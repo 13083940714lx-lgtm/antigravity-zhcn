@@ -86,6 +86,10 @@ ENGINE_EXTRA = """
     // ===== agy-zh 增强规则：发送反馈（含邮箱） =====
     const __agyFeedback = /^Send feedback as\\s+(\\S+@\\S+)$/i.exec(trimmed);
     if (__agyFeedback) return replaceTrimmed(str, trimmed, '以 ' + __agyFeedback[1] + ' 身份发送反馈');
+
+    // ===== agy-zh 增强规则：扩展市场「See N more」 =====
+    const __agySeeMore = /^See\\s+([0-9]+)\\s+more$/i.exec(trimmed);
+    if (__agySeeMore) return replaceTrimmed(str, trimmed, '查看另外 ' + __agySeeMore[1] + ' 个');
 """
 
 

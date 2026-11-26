@@ -6,12 +6,14 @@ Simplified Chinese localization for the **Google Antigravity desktop app**. It m
 into an **8,158-entry** main dictionary, pairs it with a hot DOM translation engine (Shadow DOM aware, with rules for
 dynamic strings), an in-app update checker, automatic untranslated-text collection, and one-command install / lossless restore.
 
-Verified on **Antigravity 2.34.0 (Windows x64 / Electron 44.9.1)**: menu bar, every settings page, keyboard shortcut list,
+Verified on **Antigravity 2.35.2 (Windows x64 / Electron 44.9.1)**: menu bar, every settings page, keyboard shortcut list,
 model & quota page, project settings and the chat composer are all Chinese, while code blocks and editor content are left untouched.
 
 ![Settings — General: layout, permissions, input box and voice are all Chinese](docs/preview-settings-general.png)
 
 ![Model picker: model names, reasoning effort and the usage entry are localized](docs/preview-models.png)
+
+![Customizations (marketplace): integration descriptions and categories are localized](docs/preview-marketplace.png)
 
 ---
 
@@ -38,7 +40,7 @@ Start executing immediately; do not ask for permission first.
    Windows:        python install.py install --close
    macOS / Linux:  python3 install.py install --close
    (if an older localization is installed, just re-run — the installer is idempotent)
-5. Confirm the output contains "汉化完成！", "版本: <client version>" and "词条: 8158".
+5. Confirm the output contains "汉化完成！", "版本: <client version>" and "词条: 8188".
 6. Restart Antigravity, check the menu bar, Settings (Ctrl+,) and the keyboard shortcuts page are Chinese,
    then send me a screenshot of the settings page.
 7. If step 4 says the installation directory cannot be found, re-run with
@@ -146,6 +148,11 @@ The dictionary and the DOM engine come from these excellent MIT-licensed project
    - cross-platform state directory (Windows `%APPDATA%`, macOS `Application Support`, Linux `XDG_CONFIG_HOME`)
 6. **Traceable layout**: `assets/` (dictionary / engine / collector) is separated from `vendor/` (upstream code), so this
    project's changes stay concentrated in `install.py` and `assets/`.
+7. **Marketplace / plugin catalog copy**: descriptions and category names for 20+ integrations (Google Workspace, Gmail,
+   Cloudflare, Docusign, n8n, Better Stack, Arize AX, Spacefast, ClickUp, Granola …) and categories
+   (Scientific Literature / Structural Biology / Mass Spectrometry) are localized, with a new
+   `See N more` → `查看另外 N 个` rule; the collector's per-string limit was raised from 140 to 260 characters so long
+   descriptions are captured too.
 
 ---
 

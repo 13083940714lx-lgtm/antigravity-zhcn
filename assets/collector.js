@@ -35,7 +35,7 @@
   // 对话正文 / 搜索过程 / LaTeX / URL 编码：不是界面文案，别收
   var NOISE = /\\[a-zA-Z]+|\\frac|\\hat|\$[^$]*\$|%[0-9A-F]{2}|^uid=\d+/;
   var STATUS_PREFIX = /^(Searching|Thinking|Reading|Running|Analyzing|Wrote|Fetched|Visited|Browsed)\b/;
-  var MAX_LEN = 140;
+  var MAX_LEN = 260;
 
   var pending = new Map();   // text -> 连续命中轮次
   var reported = new Set();  // 已上报
