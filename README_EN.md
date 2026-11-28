@@ -6,7 +6,7 @@ Simplified Chinese localization for the **Google Antigravity desktop app**. It m
 into an **8,158-entry** main dictionary, pairs it with a hot DOM translation engine (Shadow DOM aware, with rules for
 dynamic strings), an in-app update checker, automatic untranslated-text collection, and one-command install / lossless restore.
 
-Verified on **Antigravity 2.35.2 (Windows x64 / Electron 44.9.1)**: menu bar, every settings page, keyboard shortcut list,
+Verified on **Antigravity 2.36.0 (Windows x64 / Electron 44.9.1)**: menu bar, every settings page, keyboard shortcut list,
 model & quota page, project settings and the chat composer are all Chinese, while code blocks and editor content are left untouched.
 
 ![Settings — General: layout, permissions, input box and voice are all Chinese](docs/preview-settings-general.png)
@@ -40,7 +40,7 @@ Start executing immediately; do not ask for permission first.
    Windows:        python install.py install --close
    macOS / Linux:  python3 install.py install --close
    (if an older localization is installed, just re-run — the installer is idempotent)
-5. Confirm the output contains "汉化完成！", "版本: <client version>" and "词条: 8188".
+5. Confirm the output contains "汉化完成！", "版本: <client version>" and "词条: 8190".
 6. Restart Antigravity, check the menu bar, Settings (Ctrl+,) and the keyboard shortcuts page are Chinese,
    then send me a screenshot of the settings page.
 7. If step 4 says the installation directory cannot be found, re-run with

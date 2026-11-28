@@ -2,10 +2,10 @@
 
 **简体中文** | [English](README_EN.md)
 
-面向 **Google Antigravity 桌面版** 的简体中文汉化工具：合并三份社区词库为 **8188 条**主词典，
+面向 **Google Antigravity 桌面版** 的简体中文汉化工具：合并三份社区词库为 **8190 条**主词典，
 配合 DOM 热翻译引擎（含 Shadow DOM、动态文案规则）、设置页内更新检查、漏翻自动收集与一键安装 / 无损还原。
 
-已在 **Antigravity 2.35.2（Windows x64 / Electron 44.9.1）** 实测：菜单栏、全部设置分页、快捷键列表、
+已在 **Antigravity 2.36.0（Windows x64 / Electron 44.9.1）** 实测：菜单栏、全部设置分页、快捷键列表、
 模型与用量、项目设置、对话输入框均为中文，代码块与编辑器内容不被误翻。
 
 ![设置通用页：界面布局、权限、输入框、语音模式全部中文](docs/preview-settings-general.png)
@@ -37,7 +37,7 @@
    Windows:        python install.py install --close
    macOS / Linux:  python3 install.py install --close
    （之前装过旧版汉化就直接重跑，安装器是幂等的）
-5. 确认输出里有「汉化完成！」「版本: <客户端版本>」「词条: 8188」。
+5. 确认输出里有「汉化完成！」「版本: <客户端版本>」「词条: 8190」。
 6. 重新启动 Antigravity，检查菜单栏、设置页（Ctrl+,）、快捷键页是否中文，并把设置页截图给我。
 7. 第 4 步若提示找不到安装目录，用 --app-dir "<Antigravity 安装目录>" 再执行一次。
 8. 安装后界面仍为英文时，执行 python install.py status 并把输出贴给我。
@@ -118,7 +118,7 @@ python install.py install --block-auto-update
 
 在上述基础上，**本项目做的优化**：
 
-1. **词库合并扩到 8188 条**：三份词库去重合并，补齐单一项目缺失的条目（如 `Input Box`、`Reasoning Effort`、
+1. **词库合并扩到 8190 条**：三份词库去重合并，补齐单一项目缺失的条目（如 `Input Box`、`Reasoning Effort`、
    `Choose which key sends a message in the chat composer.` 等上游漏翻项）。
 2. **新增动态文案规则**（上游未覆盖）：
    - `Version 2.34.0` → `版本 2.34.0`
@@ -167,7 +167,7 @@ antigravity-zhcn/
 ├─ 一键汉化.bat               Windows 双击安装
 ├─ 还原英文.bat               Windows 双击还原
 ├─ assets/
-│  ├─ dict.json               主词典 8188 条
+│  ├─ dict.json               主词典 8190 条
 │  ├─ overrides.json          本项目增补 / 覆盖词条
 │  ├─ engine_preload.js       DOM 翻译引擎模板
 │  ├─ collector.js            漏翻收集器（渲染进程）
